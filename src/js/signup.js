@@ -4,7 +4,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-        const response = await fetch('https://your-api.com/signup', {
+        const response = await fetch('http://localhost:8080/usuario/cadastro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
