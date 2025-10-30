@@ -1,24 +1,41 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
+  e.preventDefault();
 
-    try {
-        const response = await fetch('https://your-api.com/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
+  // Captura os valores diretamente dos inputs
+  const email = document.querySelector('input[name="email"]').value;
+  const password = document.querySelector('input[name="password"]').value;
 
-        const result = await response.json();
-        if (response.ok) {
-            alert('Login successful!');
-            // redirect or store token
-        } else {
-            alert(result.message || 'Login failed');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Something went wrong');
+  const userData = { email, password };
+
+  try {
+    const response = await fetch('http://localhost:8080/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+
+    // Verifica se a resposta é texto ou JSON
+    const contentType = response.headers.get('content-type');
+    let result;
+
+    if (contentType && contentType.includes('application/json')) {
+      result = await response.json();
+    } else {
+      result = await response.text();
     }
+
+    // Validação da resposta
+    if (response.ok) {
+      alert('Login realizado com sucesso!');
+//      window.location.href = '../../index.html'; // redireciona após login
+    } else {
+      alert(result.message || result || 'Erro ao fazer login.');
+    }
+
+  } catch (error) {
+    console.error('Erro:', error);
+    alert('Erro ao conectar ao servidor.');
+  }
 });
